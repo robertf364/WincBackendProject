@@ -5,6 +5,7 @@ import hostRouter from "./routes/hostRouter.js";
 import propertyRouter from "./routes/propertyRouter.js";
 import amenityRouter from "./routes/amenityRouter.js";
 import bookingRouter from "./routes/bookingRouter.js";
+import reviewRouter from "./routes/reviewRouter.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/hosts", hostRouter);
 app.use("/properties", propertyRouter);
 app.use("/amenities", amenityRouter);
 app.use("/bookings", bookingRouter);
+app.use("/reviews", reviewRouter);
 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
