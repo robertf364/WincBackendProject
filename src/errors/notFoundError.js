@@ -1,6 +1,6 @@
 class NotFoundError extends Error {
   constructor(resourceId, resource) {
-    super.init(`Resource with id ${resourceId} was not found in ${resource}`);
+    super(`Resource with id ${resourceId} was not found in ${resource}`);
     this.name = "NotFoundError";
   }
 }
