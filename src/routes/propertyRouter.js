@@ -5,6 +5,7 @@ import getPropertyById from "../services/properties/getPropertyById.js";
 import createProperty from "../services/properties/createProperty.js";
 import updatePropertyById from "../services/properties/updatePropertyById.js";
 import deletePropertyById from "../services/properties/deletePropertyById.js";
+import auth from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   try {
     const {
       title,
@@ -63,6 +64,7 @@ router.post("/", async (req, res, next) => {
 
 router.put(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -99,6 +101,7 @@ router.put(
 
 router.delete(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;

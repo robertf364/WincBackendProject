@@ -5,6 +5,7 @@ import notFoundMiddleware from "../middleware/notFoundMiddleware.js";
 import createReview from "../services/reviews/createReview.js";
 import updateReviewById from "../services/reviews/updateReviewById.js";
 import deleteReviewById from "../services/reviews/deleteReviewById.js";
+import auth from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   try {
     const { userId, propertyId, rating, comment } = req.body;
     const review = await createReview(userId, propertyId, rating, comment);
@@ -43,6 +44,7 @@ router.post("/", async (req, res, next) => {
 
 router.put(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -64,6 +66,7 @@ router.put(
 
 router.delete(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;

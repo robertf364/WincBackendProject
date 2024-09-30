@@ -5,6 +5,7 @@ import notFoundMiddleware from "../middleware/notFoundMiddleware.js";
 import createBooking from "../services/bookings/createBooking.js";
 import updateBookingById from "../services/bookings/updateBookingById.js";
 import deleteBookingById from "../services/bookings/deleteBookingById.js";
+import auth from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   try {
     const {
       userId,
@@ -59,6 +60,7 @@ router.post("/", async (req, res, next) => {
 
 router.put(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -91,6 +93,7 @@ router.put(
 
 router.delete(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;

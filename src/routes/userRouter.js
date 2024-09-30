@@ -5,6 +5,7 @@ import notFoundMiddleware from "../middleware/notFoundMiddleware.js";
 import createUser from "../services/users/createUser.js";
 import updateUserById from "../services/users/updateUserById.js";
 import deleteUserById from "../services/users/deleteUserById.js";
+import auth from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   try {
     const { username, password, name, email, phoneNumber, profilePicture } =
       req.body;
@@ -47,6 +48,7 @@ router.post("/", async (req, res, next) => {
 
 router.put(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -71,6 +73,7 @@ router.put(
 
 router.delete(
   "/:id",
+  auth,
   async (req, res, next) => {
     try {
       const { id } = req.params;
