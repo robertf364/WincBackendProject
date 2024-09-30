@@ -1,0 +1,15 @@
+import { PrismaClient } from "@prisma/client";
+import NotFoundError from "../../errors/notFoundError.js";
+
+const getAmenityById = async (id) => {
+  const prisma = new PrismaClient();
+  const amenity = await prisma.amenity.findUnique({
+    where: { id },
+  });
+  if (!amenity) {
+    throw new NotFoundError(id, "amenities");
+  }
+  return amenity;
+};
+
+export default getAmenityById;
