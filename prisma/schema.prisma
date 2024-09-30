@@ -82,7 +82,7 @@ model Booking {
     id              String      @id @default(uuid())
     userId          String
     propertyId      String
-    checkinData     DateTime
+    checkinDate     DateTime
     checkoutDate    DateTime
     numberOfGuests  Int
     totalPrice      Decimal     @db.Decimal(10, 2)
