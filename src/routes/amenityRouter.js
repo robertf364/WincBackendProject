@@ -12,7 +12,7 @@ const router = Router();
 router.get("/", async (req, res, next) => {
   try {
     const amenities = await getAmenities();
-    res.status(200).json({ amenities });
+    res.status(200).json(amenities);
   } catch (error) {
     next(error);
   }
@@ -24,7 +24,7 @@ router.get(
     try {
       const { id } = req.params;
       const amenity = await getAmenityById(id);
-      res.status(200).json({ amenity });
+      res.status(200).json(amenity);
     } catch (error) {
       next(error);
     }
@@ -36,7 +36,7 @@ router.post("/", auth, async (req, res, next) => {
   try {
     const { name } = req.body;
     const amenity = await createAmenity(name);
-    res.status(201).json({ amenity });
+    res.status(201).json(amenity);
   } catch (error) {
     next(error);
   }

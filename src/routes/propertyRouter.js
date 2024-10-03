@@ -13,7 +13,7 @@ router.get("/", async (req, res, next) => {
   try {
     const { location, pricePerNight, amenities } = req.query;
     const properties = await getProperties(location, pricePerNight, amenities);
-    res.status(200).json({ properties });
+    res.status(200).json(properties);
   } catch (error) {
     next(error);
   }
@@ -25,7 +25,7 @@ router.get(
     try {
       const { id } = req.params;
       const property = await getPropertyById(id);
-      res.status(200).json({ property });
+      res.status(200).json(property);
     } catch (error) {
       next(error);
     }
@@ -57,7 +57,7 @@ router.post("/", auth, async (req, res, next) => {
       hostId,
       rating
     );
-    res.status(201).json({ property });
+    res.status(201).json(property);
   } catch (error) {
     next(error);
   }

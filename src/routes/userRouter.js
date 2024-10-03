@@ -12,7 +12,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   const { username, email } = req.query;
   const users = await getUsers(username, email);
-  res.status(200).json({ users });
+  res.status(200).json(users);
 });
 
 router.get(
@@ -21,7 +21,7 @@ router.get(
     try {
       const { id } = req.params;
       const user = await getUserById(id);
-      res.status(200).json({ user });
+      res.status(200).json(user);
     } catch (error) {
       next(error);
     }
@@ -41,7 +41,7 @@ router.post("/", auth, async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
-    res.status(201).json({ user });
+    res.status(201).json(user);
   } catch (error) {
     next(error);
   }
