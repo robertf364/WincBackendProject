@@ -9,63 +9,59 @@ import userData from "../src/data/users.json" with { type: "json" };
 const prisma = new PrismaClient();
 
 async function main() {
+  // Delete existing data (in order to avoid foreign key conflicts)
+  await prisma.review.deleteMany();
+  await prisma.booking.deleteMany();
+  await prisma.amenity.deleteMany();
+  await prisma.property.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.host.deleteMany();
+
   // Create hosts
   const { hosts } = hostData;
   for (const host of hosts) {
-    await prisma.host.upsert({
-      where: { id: host.id },
-      update: {},
-      create: host,
+    await prisma.host.create({
+      data: host,
     });
   }
 
   // Create properties
   const { properties } = propertyData;
   for (const property of properties) {
-    await prisma.property.upsert({
-      where: { id: property.id },
-      update: {},
-      create: property,
+    await prisma.property.create({
+      data: property,
     });
   }
 
   // Create users
   const { users } = userData;
   for (const user of users) {
-    await prisma.user.upsert({
-      where: { id: user.id },
-      update: {},
-      create: user,
+    await prisma.user.create({
+      data: user,
     });
   }
 
   // Create amenities
   const { amenities } = amenityData;
   for (const amenity of amenities) {
-    await prisma.amenity.upsert({
-      where: { id: amenity.id },
-      update: {},
-      create: amenity,
+    await prisma.amenity.create({
+      data: amenity,
     });
   }
 
   // Create bookings
   const { bookings } = bookingData;
   for (const booking of bookings) {
-    await prisma.booking.upsert({
-      where: { id: booking.id },
-      update: {},
-      create: booking,
+    await prisma.booking.create({
+      data: booking,
     });
   }
 
   // Create reviews
   const { reviews } = reviewData;
   for (const review of reviews) {
-    await prisma.review.upsert({
-      where: { id: review.id },
-      update: {},
-      create: review,
+    await prisma.review.create({
+      data: review,
     });
   }
 }
