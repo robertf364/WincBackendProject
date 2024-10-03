@@ -10,6 +10,7 @@ import bookingRouter from "./routes/bookingRouter.js";
 import reviewRouter from "./routes/reviewRouter.js";
 
 import errorHandler from "./middleware/errorMiddleware.js";
+import log from "./middleware/logMiddleware.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 app.use(express.json());
+app.use(log);
 app.use("/login", loginRouter);
 app.use("/users", userRouter);
 app.use("/hosts", hostRouter);

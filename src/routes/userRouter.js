@@ -9,11 +9,11 @@ import auth from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-// router.get("/", async (req, res) => {
-//   const { username, email } = req.query;
-//   const users = await getUsers(username, email);
-//   res.status(200).json({ users });
-// });
+router.get("/", async (req, res) => {
+  const { username, email } = req.query;
+  const users = await getUsers(username, email);
+  res.status(200).json({ users });
+});
 
 router.get(
   "/:id",
