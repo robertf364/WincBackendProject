@@ -17,6 +17,7 @@ datasource db {
 model Amenity {
     id      String      @id @default(uuid())
     name    String
+    properties Property[]
 }
 
 model User {
@@ -59,6 +60,7 @@ model Property {
 
     reviews Review[]
     bookings Booking[]
+    amenities Amenity[]
 
     host Host @relation(fields: [hostId], references: [id])
     @@index([hostId])
