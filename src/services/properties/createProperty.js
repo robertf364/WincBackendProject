@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { convertPropertyPricePerNight } from "../../utils/propertyUtils.js";
 
 const createProperty = async (
   title,
@@ -25,7 +26,7 @@ const createProperty = async (
       rating,
     },
   });
-  return property;
+  return convertPropertyPricePerNight(property);
 };
 
 export default createProperty;

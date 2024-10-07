@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { convertMultiplePropertyPricePerNight } from "../../utils/propertyUtils.js";
 
 const getProperties = async (location, pricePerNight, amenities) => {
   const prisma = new PrismaClient();
@@ -17,7 +18,8 @@ const getProperties = async (location, pricePerNight, amenities) => {
       },
     };
   }
-  const properties = await prisma.property.findMany(query);
+  let properties = await prisma.property.findMany(query);
+  properties = convertMultiplePropertyPricePerNight(properties);
   return properties;
 };
 
