@@ -44,6 +44,27 @@ router.post("/", auth, async (req, res, next) => {
       totalPrice,
       bookingStatus,
     } = req.body;
+    // Check input
+    const requiredArguments = [
+      "userId",
+      "propertyId",
+      "checkinDate",
+      "checkoutDate",
+      "numberOfGuests",
+      "totalPrice",
+      "bookingStatus",
+    ];
+    let missingArguments = [];
+    for (const arg of requiredArguments) {
+      if (req.body[arg] === undefined) {
+        missingArguments.push(arg);
+      }
+    }
+    if (missingArguments.length > 0) {
+      return res.status(400).json({
+        message: `Missing arguments for ${missingArguments.join(" & ")}`,
+      });
+    }
     const booking = await createBooking(
       userId,
       propertyId,
