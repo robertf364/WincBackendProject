@@ -1,6 +1,8 @@
 export const convertPropertyPricePerNight = (property) => {
   let propertyCopy = { ...property };
-  propertyCopy.pricePerNight = propertyCopy.pricePerNight.toNumber();
+  if (propertyCopy.pricePerNight !== undefined) {
+    propertyCopy.pricePerNight = parseFloat(propertyCopy.pricePerNight);
+  }
   return propertyCopy;
 };
 
