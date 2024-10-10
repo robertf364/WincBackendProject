@@ -12,6 +12,14 @@ const router = Router();
 router.get("/", async (req, res, next) => {
   try {
     const { location, pricePerNight, amenities } = req.query;
+    if (pricePerNight !== undefined && typeof pricePerNight != Number) {
+      res
+        .status(400)
+        .json({
+          message:
+            "Your input for 'pricePerNight' is invalid. Please make sure you enter a valid number and check your decimal seperator.",
+        });
+    }
     const properties = await getProperties(location, pricePerNight, amenities);
     res.status(200).json(properties);
   } catch (error) {
