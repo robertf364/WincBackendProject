@@ -6,6 +6,8 @@ import createReview from "../services/reviews/createReview.js";
 import updateReviewById from "../services/reviews/updateReviewById.js";
 import deleteReviewById from "../services/reviews/deleteReviewById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -32,15 +34,23 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const { userId, propertyId, rating, comment } = req.body;
-    const review = await createReview(userId, propertyId, rating, comment);
-    res.status(201).json(review);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const { userId, propertyId, rating, comment } = req.body;
+      // Check input
+      const requiredArguments = ["userId", "propertyId", "rating", "comment"];
+      checkRequiredArguments(req, requiredArguments, "review");
+      const review = await createReview(userId, propertyId, rating, comment);
+      res.status(201).json(review);
+    } catch (error) {
+      next(error);
+    }
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",

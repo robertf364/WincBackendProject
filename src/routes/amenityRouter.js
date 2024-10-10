@@ -6,6 +6,8 @@ import createAmenity from "../services/amenities/createAmenity.js";
 import updateAmenityById from "../services/amenities/updateAmenityById.js";
 import deleteAmenityById from "../services/amenities/deleteAmenityById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -32,15 +34,23 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const { name } = req.body;
-    const amenity = await createAmenity(name);
-    res.status(201).json(amenity);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const { name } = req.body;
+      // Check input
+      const requiredArguments = ["name"];
+      checkRequiredArguments(req, requiredArguments, "amenity");
+      const amenity = await createAmenity(name);
+      res.status(201).json(amenity);
+    } catch (error) {
+      next(error);
+    }
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",

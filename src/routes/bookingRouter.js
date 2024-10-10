@@ -6,6 +6,8 @@ import createBooking from "../services/bookings/createBooking.js";
 import updateBookingById from "../services/bookings/updateBookingById.js";
 import deleteBookingById from "../services/bookings/deleteBookingById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -33,52 +35,47 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const {
-      userId,
-      propertyId,
-      checkinDate,
-      checkoutDate,
-      numberOfGuests,
-      totalPrice,
-      bookingStatus,
-    } = req.body;
-    // Check input
-    const requiredArguments = [
-      "userId",
-      "propertyId",
-      "checkinDate",
-      "checkoutDate",
-      "numberOfGuests",
-      "totalPrice",
-      "bookingStatus",
-    ];
-    let missingArguments = [];
-    for (const arg of requiredArguments) {
-      if (req.body[arg] === undefined) {
-        missingArguments.push(arg);
-      }
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const {
+        userId,
+        propertyId,
+        checkinDate,
+        checkoutDate,
+        numberOfGuests,
+        totalPrice,
+        bookingStatus,
+      } = req.body;
+      // Check input
+      const requiredArguments = [
+        "userId",
+        "propertyId",
+        "checkinDate",
+        "checkoutDate",
+        "numberOfGuests",
+        "totalPrice",
+        "bookingStatus",
+      ];
+      checkRequiredArguments(req, requiredArguments, "booking");
+      const booking = await createBooking(
+        userId,
+        propertyId,
+        checkinDate,
+        checkoutDate,
+        numberOfGuests,
+        totalPrice,
+        bookingStatus
+      );
+      res.status(201).json(booking);
+    } catch (error) {
+      next(error);
     }
-    if (missingArguments.length > 0) {
-      return res.status(400).json({
-        message: `Missing arguments for ${missingArguments.join(" & ")}`,
-      });
-    }
-    const booking = await createBooking(
-      userId,
-      propertyId,
-      checkinDate,
-      checkoutDate,
-      numberOfGuests,
-      totalPrice,
-      bookingStatus
-    );
-    res.status(201).json(booking);
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",

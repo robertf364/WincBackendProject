@@ -6,6 +6,8 @@ import createProperty from "../services/properties/createProperty.js";
 import updatePropertyById from "../services/properties/updatePropertyById.js";
 import deletePropertyById from "../services/properties/deletePropertyById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -13,12 +15,10 @@ router.get("/", async (req, res, next) => {
   try {
     const { location, pricePerNight, amenities } = req.query;
     if (pricePerNight !== undefined && typeof pricePerNight != Number) {
-      res
-        .status(400)
-        .json({
-          message:
-            "Your input for 'pricePerNight' is invalid. Please make sure you enter a valid number and check your decimal seperator.",
-        });
+      res.status(400).json({
+        message:
+          "Your input for 'pricePerNight' is invalid. Please make sure you enter a valid number and check your decimal seperator.",
+      });
     }
     const properties = await getProperties(location, pricePerNight, amenities);
     res.status(200).json(properties);
@@ -41,35 +41,53 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const {
-      title,
-      description,
-      location,
-      pricePerNight,
-      bedroomCount,
-      bathRoomCount,
-      maxGuestCount,
-      hostId,
-      rating,
-    } = req.body;
-    const property = await createProperty(
-      title,
-      description,
-      location,
-      pricePerNight,
-      bedroomCount,
-      bathRoomCount,
-      maxGuestCount,
-      hostId,
-      rating
-    );
-    res.status(201).json(property);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const {
+        title,
+        description,
+        location,
+        pricePerNight,
+        bedroomCount,
+        bathRoomCount,
+        maxGuestCount,
+        hostId,
+        rating,
+      } = req.body;
+      // Check input
+      const requiredArguments = [
+        "title",
+        "description",
+        "location",
+        "pricePerNight",
+        "bedroomCount",
+        "bathRoomCount",
+        "maxGuestCount",
+        "hostId",
+        "rating",
+      ];
+      checkRequiredArguments(req, requiredArguments, "property");
+      const property = await createProperty(
+        title,
+        description,
+        location,
+        pricePerNight,
+        bedroomCount,
+        bathRoomCount,
+        maxGuestCount,
+        hostId,
+        rating
+      );
+      res.status(201).json(property);
+    } catch (error) {
+      next(error);
+    }
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",

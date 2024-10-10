@@ -6,6 +6,8 @@ import createUser from "../services/users/createUser.js";
 import updateUserById from "../services/users/updateUserById.js";
 import deleteUserById from "../services/users/deleteUserById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -29,23 +31,38 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const { username, password, name, email, phoneNumber, profilePicture } =
-      req.body;
-    const user = await createUser(
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture
-    );
-    res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const { username, password, name, email, phoneNumber, profilePicture } =
+        req.body;
+      // Check input
+      const requiredArguments = [
+        "username",
+        "password",
+        "name",
+        "email",
+        "phoneNumber",
+        "profilePicture",
+      ];
+      checkRequiredArguments(req, requiredArguments, "user");
+      const user = await createUser(
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture
+      );
+      res.status(201).json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",

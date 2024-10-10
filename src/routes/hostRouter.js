@@ -6,6 +6,8 @@ import createHost from "../services/hosts/createHost.js";
 import updateHostById from "../services/hosts/updateHostById.js";
 import deleteHostById from "../services/hosts/deleteHostById.js";
 import auth from "../middleware/authMiddleware.js";
+import { checkRequiredArguments } from "../utils/checkRequiredInput.js";
+import missingArgsMiddleware from "../middleware/missingArgumentsMiddleware.js";
 
 const router = Router();
 
@@ -33,31 +35,47 @@ router.get(
   notFoundMiddleware
 );
 
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const {
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
-      aboutMe,
-    } = req.body;
-    const host = await createHost(
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
-      aboutMe
-    );
-    res.status(201).json(host);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  "/",
+  auth,
+  async (req, res, next) => {
+    try {
+      const {
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture,
+        aboutMe,
+      } = req.body;
+      // Check input
+      const requiredArguments = [
+        "username",
+        "password",
+        "name",
+        "email",
+        "phoneNumber",
+        "profilePicture",
+        "aboutMe",
+      ];
+      checkRequiredArguments(req, requiredArguments, "host");
+      const host = await createHost(
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture,
+        aboutMe
+      );
+      res.status(201).json(host);
+    } catch (error) {
+      next(error);
+    }
+  },
+  missingArgsMiddleware
+);
 
 router.put(
   "/:id",
